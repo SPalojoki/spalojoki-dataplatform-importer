@@ -1,0 +1,44 @@
+name: Deploy Cloud Functions
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+    - name: Set up Python environment
+      run: python3 -m venv env
+
+    - name: Find and process functions
+      run: |
+        source env/bin/activate
+        for dir in */; do
+          # Currently only Python functions are supported
+          if [ -f "$dir/main.py" ]; then
+            echo "Processing $dir"
+            cd $dir
+            if [ -f requirements.txt ]; then
+              pip install -r requirements.txt
+            fi
+            cd ..
+            zip -r ${dir%/}-source.zip $dir
+            gsutil cp ${dir%/}-source.zip gs://${{ secrets.GCP_FUNCTION_BUCKET }}/importer_functions/${dir%/}-source.zip
+          fi
+        done
