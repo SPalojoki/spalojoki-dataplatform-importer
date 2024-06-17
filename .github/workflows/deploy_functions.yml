@@ -37,9 +37,9 @@ jobs:
             CONFIG=$(cat "$dir/config.json")
 
             FUNCTION_NAME=$(echo $CONFIG | jq -r '.functionName')
-            $ENTRYPOINT = $(echo $CONFIG | jq -r '.entryPoint')
+            ENTRYPOINT = $(echo $CONFIG | jq -r '.entryPoint')
             SCHEDULE_PUBSUB_TOPIC=$(echo $CONFIG | jq -r '.schedule')
-            $RUNTIME = $(echo $CONFIG | jq -r '.runtime')
+            RUNTIME = $(echo $CONFIG | jq -r '.runtime')
 
             gcloud functions deploy $FUNCTION_NAME \
               --entry-point $FUNCTION_NAME \
