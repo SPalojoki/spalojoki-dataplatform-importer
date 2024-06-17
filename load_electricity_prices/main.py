@@ -3,9 +3,11 @@ from google.cloud import bigquery
 from google.api_core.exceptions import NotFound
 import json
 from datetime import datetime, timezone
+import os
 
 # This should be moved to environment variable
-table_id = "analytics__landing.electricity_prices"
+project_id = os.getenv('PROJECT_ID')
+table_id = f"{project_id}.analytics__landing.electricity_prices"
 
 client = bigquery.Client()
 

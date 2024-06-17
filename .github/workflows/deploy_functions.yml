@@ -50,7 +50,8 @@ jobs:
               --max-instances 1 \
               --memory 128MB \
               --timeout 10s \
-              --region europe-central2
+              --region europe-central2 \
+              --set-env-vars PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}
           fi
         done
 
