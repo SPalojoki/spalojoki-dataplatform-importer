@@ -40,6 +40,5 @@ jobs:
             cd ..
             zip -r -j ${dir%/}-source.zip $dir
             gsutil cp ${dir%/}-source.zip gs://${{ secrets.GCP_FUNCTION_BUCKET }}/importer_functions/${dir%/}-source.zip
-            gcloud functions deploy --region europe-central2 --source gs://${{ secrets.GCP_FUNCTION_BUCKET }}/importer_functions/${dir%/}-source.zip
           fi
         done
