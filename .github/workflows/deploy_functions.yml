@@ -37,7 +37,7 @@ jobs:
             CONFIG=$(cat "$dir/config.json")
 
             FUNCTION_NAME=$(echo $CONFIG | jq -r '.functionName')
-            ENTRYPOINT=$(echo $CONFIG | jq -r '.entryPoint')
+            ENTRYPOINT=$(echo $CONFIG | jq -r '.entrypoint')
             SCHEDULE_PUBSUB_TOPIC=$(echo $CONFIG | jq -r '.schedule')
             RUNTIME=$(echo $CONFIG | jq -r '.runtime')
 
