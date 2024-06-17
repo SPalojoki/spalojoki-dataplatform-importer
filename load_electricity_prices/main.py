@@ -54,7 +54,7 @@ def insert_data(data):
         print(f"Data inserted successfully.")
 
 
-def main():
+def main(message, context):
     data = fetch_electricity_prices()
     create_table_if_not_exists()
     insert_data(data)
