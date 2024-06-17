@@ -26,19 +26,34 @@ jobs:
     - name: Set up Python environment
       run: python3 -m venv env
 
-    - name: Find and process functions
+    - name: Install jq
+      run: sudo apt-get install -y jq
+
+    - name: Deploy Cloud Functions
       run: |
-        source env/bin/activate
-        for dir in */; do
-          # Currently only Python functions are supported
-          if [ -f "$dir/main.py" ]; then
-            echo "Processing $dir"
-            cd $dir
-            if [ -f requirements.txt ]; then
-              pip install -r requirements.txt
-            fi
-            cd ..
-            zip -r -j ${dir%/}-source.zip $dir
-            gsutil cp ${dir%/}-source.zip gs://${{ secrets.GCP_FUNCTION_BUCKET }}/importer_functions/${dir%/}-source.zip
+        for dir in */ ; do
+          if [ -f "$dir/config.json" ]; then
+            echo "Deploying function in $dir"
+            CONFIG=$(cat "$dir/config.json")
+
+            FUNCTION_NAME=$(echo $CONFIG | jq -r '.functionName')
+            $ENTRYPOINT = $(echo $CONFIG | jq -r '.entryPoint')
+            SCHEDULE_PUBSUB_TOPIC=$(echo $CONFIG | jq -r '.schedule')
+            $RUNTIME = $(echo $CONFIG | jq -r '.runtime')
+
+            gcloud functions deploy $FUNCTION_NAME \
+              --entry-point $FUNCTION_NAME \
+              --runtime $RUNTIME \
+              --trigger-topic $SCHEDULE_PUBSUB_TOPIC \
+              --source $dir \
+              --project ${{ secrets.GCP_PROJECT_ID }} \
+              --max_instances 1 \
+              --memory 128MB \
+              --timeout 10s \
+              --quiet
           fi
         done
+
+    - name: Clean up
+      run: |
+        echo "Deployment complete!"

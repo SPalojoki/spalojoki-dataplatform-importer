@@ -1,0 +1,6 @@
+{
+    "functionName": "LoadElectricityPrices",
+    "entrypoint": "main",
+    "schedule": "daily",
+    "runtime": "python39"
+}
