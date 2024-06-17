@@ -50,6 +50,7 @@ jobs:
               --max-instances 1 \
               --memory 128MB \
               --timeout 10s
+              --region europe-central2
           fi
         done
 
