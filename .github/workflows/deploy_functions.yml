@@ -49,7 +49,7 @@ jobs:
               --project ${{ secrets.GCP_PROJECT_ID }} \
               --max-instances 1 \
               --memory 128MB \
-              --timeout 10s \
+              --timeout 10s
           fi
         done
 
